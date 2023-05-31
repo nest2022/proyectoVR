@@ -306,11 +306,11 @@ function animate() {
 
   // Rota la cámara según las coordenadas del mouse
 
-  esfera.position.z -= 0.01;
+  esfera.position.z -= 0.05;
 
   // Avanza la cámara si
   if (isMouseDown) {
-    camera.position.z -= 0.1;
+    camera.position.z -= 0.01;
     if (camera.position.z < 0 && !audio.paused) {
       audio.play();
     }
