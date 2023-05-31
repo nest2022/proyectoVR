@@ -207,23 +207,10 @@ if (distance11 < 0.3) { // Ajusta la distancia de colisión según tus necesidad
 
 
 // Variables para el movimiento de la cámara
-let mouseX = 0;
-const sensitivity =3; // Sensibilidad ajustable
+ // Sensibilidad ajustable
 
 // Variables para el movimiento de la cámara al hacer clic
-let isMouseDown = false;
-const moveSpeed = 0.05; // Velocidad de movimiento ajustable
 
-// Función para manejar el movimiento del mouse
-function handleMouseMove(event) {
-  // Normaliza las coordenadas del mouse entre -1 y 1
-  mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-  
-
-  // Escala los valores de mouseX y mouseY para aumentar la sensibilidad
-  mouseX *= sensitivity;
-  
-}
 
 // Configuración de StereoEffect
 const stereoEffect = new THREE.StereoEffect(renderer);
@@ -233,28 +220,29 @@ stereoEffect.setSize(window.innerWidth, window.innerHeight);
 const audio = new Audio();
 audio.src = 'caminar.mp3';
 
-// Función para manejar el clic del mouse
-function handleMouseDown(event) {
-  if (event.button === 0) {
-    isMouseDown = true;
+let isMouseDown = false;
 
-    audio.play();
-  }
-}
+      function onMouseDown(event) {
+        if (event.button === 0) {
+          isMouseDown = true;
 
-// Función para manejar el levantamiento del clic del mouse
-function handleMouseUp(event) {
-  if (event.button === 0) {
-    isMouseDown = false;
+          
+          audio.play();
+          
+        }
+      }
 
-    audio.pause();
-  }
-}
+      function onMouseUp(event) {
+        if (event.button === 0) {
+          isMouseDown = false;
+          
+          audio.pause();
+        }
+      }
 
 // Agrega los eventos para escuchar el movimiento y clic del mouse
-document.addEventListener('mousemove', handleMouseMove, false);
-document.addEventListener('mousedown', handleMouseDown, false);
-document.addEventListener('mouseup', handleMouseUp, false);
+document.addEventListener('mousedown', onMouseDown, false);
+document.addEventListener('mouseup', onMouseUp, false);
 
 
 
@@ -317,15 +305,16 @@ function animate() {
 
 
   // Rota la cámara según las coordenadas del mouse
-  camera.rotation.y = -mouseX * Math.PI;
+
   esfera.position.z -= 0.01;
 
   // Avanza la cámara si
   if (isMouseDown) {
-const direction = new THREE.Vector3(-Math.sin(camera.rotation.y), 0, -Math.cos(camera.rotation.y));
-const moveVector = direction.multiplyScalar(moveSpeed);
-camera.position.add(moveVector);
-}
+    camera.position.z -= 0.1;
+    if (camera.position.z < 0 && !audio.paused) {
+      audio.play();
+    }
+  }
 checkCollision();
 controls.update();
 
